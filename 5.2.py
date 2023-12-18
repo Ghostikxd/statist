@@ -3,11 +3,10 @@ from scipy.stats import wilcoxon
 
 def write_to_file(file_path, statistic, p_value, hypothesis_result):
     with open(file_path, 'w') as result_file:
-        result_file.write(f"Статистика критерия знаковых рангов: {statistic}\n")
+        result_file.write(
+            f"Статистика критерия знаковых рангов: {statistic}\n")
         result_file.write(f"P-значение: {p_value}\n")
         result_file.write(hypothesis_result)
-
-
 
 
 def read_from_file(file_path):
@@ -18,10 +17,10 @@ def read_from_file(file_path):
     return data_before, data_after
 
 
-input_file_path = "C:\\Users\\noname\\code\\statistic\\Inp\\wilcoxon_input.inp"
+input_file_path = "Inp\\wilcoxon_input.inp"
 
 
-output_file_path = "C:\\Users\\noname\\code\\statistic\\Out\\wilcoxon_result.out"
+output_file_path = "Out\\wilcoxon_result.out"
 
 
 data_before, data_after = read_from_file(input_file_path)
