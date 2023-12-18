@@ -170,65 +170,6 @@ def MLE_Weibull():
 
 ######################################################
 
-def MLS_Normal():
-    finp=open("Inp\MLS_Normal.inp")
-    finp.readline()
-    n=int(finp.readline())
-    ss=finp.readline()
-    beta=float(finp.readline())
-    ss=finp.readline()
-    y=tuple(map(float,finp.readline().split(" ")))
-    ss=finp.readline()
-    kp=int(finp.readline())
-    ss=finp.readline()
-    p=tuple(map(float,finp.readline().split(" ")))
-    finp.close()
-
-    fout=open('Out\MLS_Normal.out','w')
-    n=len(y)
-    print("MO and Std by observed values",file=fout)
- 
-    b,db=mlsordern(n,y)          
-    a=b[0]
-    s=b[1]
-
-    print("a=",a,file=fout)
-    print("s=",s,file=fout)
-    print("Sample size n=",n,file=fout)
-    prints("Sample:",y,fout)
-
-    w=cum(n)
-    print("Observed values sample size n=",len(w),file=fout)
-    prints("Empirical probability:",w,fout)
-    w=stats.norm.ppf(w)
-    zp=stats.norm.ppf(p)
-    delta=zp*np.sqrt(n)
-    print("Tolerance probability=",beta,file=fout)
-    f=n-1
-
-    db=db*n
-    print("D{b}=",db,file=fout)
-    t1=db[0][0];t2=db[1][1];t12=db[0][1] 
- 
-    print("Tolerance probability=",beta,file=fout)
-    tlow,tup=nctlimit_app(n,beta,zp,t1,t2,t12)   
-
-    #tlow,tup=nctlimit_exact(f,beta,delta)
-
-    prints("Probability range:",p,fout)
-    prints("Normal quantiles:",w,fout)
-    prints("Upper non central t quantile",tup,fout)
-    prints("Low non central t quantile",tlow,fout)
-    xp=a+s*zp
-    xpup=a+s*tup/np.sqrt(n)
-    xplow=a+s*tlow/np.sqrt(n)
-    prints("Upper tolerance limit",xpup,fout)
-    prints("Quantile estimations",xp,fout)
-    prints("Low tolerance limit",xplow,fout)
-    fout.close()
-
-    show_distr("Normal",True,True,y,w,xp,zp,xplow,zp,xpup,zp,grid_size=n,distr_name=r'$N({a=}$'+str(round(a,4))+",${s=}$"+str(round(s,4))+")")
-
 ###############################################
 
 def MLS_Weibull():
@@ -301,25 +242,10 @@ def MLS_Weibull():
 
 #################MLE Weibull Minimized Function#######################
 
-def WeibullMinFunction(x,y,n):
-    b=x[0]
-    z=y**b
-    c=sum(z)/n
-    s2=sum(z*np.log(z))
-    s1=sum(np.log(z))     
-    c1=n+s1-s2/c
-    return(c1**2)
+
 
 ##################### ММП Ковариационная матрица распределения Вейбулла ##################
 
-def CovMatrixMleW(n,z):
-    v=np.zeros((2,2))
-    v[0][0]=1.
-    v[0][1]=1.+sum(z)/n
-    v[1][0]=v[0][1]
-    v[1][1]=1.+sum(z**2*np.exp(z))/n
-    v=linalg.inv(v)
-    return(v)
 
 #######################################################################################
 
@@ -356,46 +282,6 @@ def nctlimit_app(n,beta,zp,t1,t2,t12):
 
 
 ##############################################################################
-
-def show_distr(tdistr,nbegin,nend,x,y,xp,yp,xplow,yplow,xpup,ypup,grid_size, distr_name):
-    
-    if tdistr=="Weibull":
-        p=[0.01,0.025,0.05,0.1,0.2,0.3,0.5,0.7,0.9,0.95,0.995]
-        zp=np.log(np.log(1./(1.-np.asarray(p))))
-    if tdistr=="Normal":
-        p=[0.005,0.01,0.025,0.05,0.1,0.2,0.3,0.5,0.7,0.8,0.9,0.95,0.975,0.99,0.995]
-        zp=stats.norm.ppf(np.asarray(p),0,1)
-    kp=len(p)
-    ymin=zp[0]
-    ymax=zp[kp-1]+0.5
-    xmin=min(xplow)
-    xmax=max(xpup)+0.5
-   
-    grid = np.linspace(xmin, xmax, grid_size) 
-    #if nbegin==True:figure,axes=plt.subplots(figsize=(12, 10))
-    if nbegin==True:figure,axes=plt.subplots()
-    plt.plot(x,y,'r+',markersize=12,label=u'Выборка') 
-    plt.plot(xp,yp,'black',lw=3,label=u'Distribution')
-    plt.plot(xplow,yplow,'g-',lw=2,label=u'Xlow')
-    plt.plot(xpup,ypup,'g-.',lw=2,label=u'Xup')
-    
-    for i in range(kp):
-        xx=[xmin,xmax]
-        yy=[zp[i],zp[i]] 
-        plt.text (xmax,zp[i],str(100*p[i])+"%")
-        plt.plot(xx,yy,'black',lw=1,label='',linestyle='dashed')
-    plt.text(xmax,ymax,"P%")
-
-    plt.grid(ls=':') 
-    plt.xlabel(r'${X}$', fontsize=18) 
-    plt.ylabel(r'${Zp}$', fontsize=18) 
-    plt.xlim((xmin, xmax)) 
-    plt.ylim((ymin, ymax)) 
-    title = 'Distribution {}'.format(distr_name) 
-    plt.title(title, fontsize=20) 
-    
-    if nbegin==True:axes.legend();
-    if nbegin==True and nend==True:plt.show()
 
 ################################################################################
 
