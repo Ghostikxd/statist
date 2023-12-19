@@ -39,16 +39,14 @@ def grubbs_test():
     ualpha = max_test_indices(data, alpha)
 
     if is_outlier:
-        print("Критикал = ", critical_value)
-        print("Тест = ", test_statistic)
-        print("Ready", ualpha)
-        print("Выброс обнаружен.")
+        fout.write("Критикал = {}\n".format(critical_value))
+        fout.write("Тест = {}\n".format(test_statistic))
+        fout.write("Ready {}\n".format(ualpha))
         fout.write("Выброс обнаружен.")
     else:
-        print("Критикал = ", critical_value)
-        print("Тест = ", test_statistic)
-        print("Ready", ualpha)
-        print("Выброс не обнаружен.")
+        fout.write("Критикал = {}\n".format(critical_value))
+        fout.write("Тест = {}\n".format(test_statistic))
+        fout.write("Ready {}\n".format(ualpha))
         fout.write("Выброс не обнаружен.")
 
     fout.close()
